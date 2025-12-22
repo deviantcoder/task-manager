@@ -1,0 +1,29 @@
+{% extends '_base.html' %}
+
+{% load widget_tweaks %}
+
+{% block head_title %}
+    Log Out
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-5">
+                <div class="card rounded-3 p-3 py-5 border-0 bg-dark-subtle">
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <span class="card-title fw-semibold text-white fs-4">
+                                Are you sure you want to <span class="text-warning">sign out</span>?
+                            </span>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100 mt-2 rounded-3 p-2 fw-bold">Sign Out</button>
+                        </form>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

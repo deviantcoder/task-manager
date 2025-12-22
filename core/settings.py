@@ -1,18 +1,23 @@
 from pathlib import Path
 
+from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-(*3rb2o2$^twr73k7x&s8-$43-h25su3sdgt2mf#+0hn%)28!v'
+SECRET_KEY = config('SECRET_KEY', cast=str)
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -21,7 +26,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third party
-    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+    'widget_tweaks',
+
     # project apps
     'apps.accounts.apps.AccountsConfig',
 ]
@@ -34,6 +44,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # third party
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -109,3 +122,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Auth config
 
 AUTH_USER_MODEL = 'accounts.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+ACCOUNT_SIGNUP_FIELDS = [
+    'username*', 'email*', 'password1*', 'password2*'
+]
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+# Social auth config
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    },
+    'google': {
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    },
+}

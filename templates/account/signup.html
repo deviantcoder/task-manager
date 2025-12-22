@@ -1,0 +1,74 @@
+{% extends '_base.html' %}
+
+{% load widget_tweaks %}
+
+{% block head_title %}
+    Sign Up
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-5">
+                <div class="card rounded-3 p-3 py-5 border-0 bg-dark-subtle">
+                    <div class="card-body text-center">
+                        <h3 class="card-title mb-4 fw-bold text-white">Create an account</h3>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3 text-start">
+                                <i class="bi bi-envelope-at-fill me-2"></i> {{ form.email|add_label_class:"form-label fw-semibold" }}
+                                {% render_field form.email class="form-control p-3 rounded-3" placeholder="Enter your email" %}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3 text-start">
+                                <i class="bi bi-person-fill me-2"></i> {{ form.username|add_label_class:"form-label fw-semibold" }}
+                                {% render_field form.username class="form-control p-3 rounded-3" placeholder="Create a username" %}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3 text-start">
+                                <i class="bi bi-lock-fill me-2"></i> {{ form.password1|add_label_class:"form-label fw-semibold" }}
+                                {% render_field form.password1 class="form-control p-3 rounded-3" placeholder="Create a password" %}
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password1.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3 text-start">
+                                <i class="bi bi-lock-fill me-2"></i> {{ form.password2|add_label_class:"form-label fw-semibold" }}
+                                {% render_field form.password2 class="form-control p-3 rounded-3" placeholder="Repeate the password" %}
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password2.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-outline-light w-100 mt-2 rounded-3 p-2 fw-bold">Sign Up</button>
+                        </form>
+                        <div class="mt-4 text-muted small">
+                            <p>
+                                Already have an account? <a href="{% url 'account_login' %}" class="text-decoration-none fw-bold text-primary">Sign in</a>
+                            </p>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
