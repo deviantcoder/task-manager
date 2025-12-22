@@ -28,12 +28,14 @@ INSTALLED_APPS = [
     # third party
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
     'widget_tweaks',
 
     # project apps
     'apps.accounts.apps.AccountsConfig',
+    'apps.tasks.apps.TasksConfig',
 ]
 
 MIDDLEWARE = [
