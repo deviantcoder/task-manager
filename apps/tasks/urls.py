@@ -12,4 +12,5 @@ urlpatterns = [
     path('projects/<uuid:project_id>/delete/', views.project_delete, name='project_delete'),
 
     path('projects/<uuid:project_id>/tasks/create/', views.task_create, name='task_create'),
+    path('projects/<uuid:project_id>/tasks/<uuid:task_id>/delete/', views.task_delete, name='task_delete'),
 ]

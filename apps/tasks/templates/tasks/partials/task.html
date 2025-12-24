@@ -16,8 +16,8 @@
         <button class="btn btn-sm border-0 bg-dark-subtle">
             <i class="bi bi-pencil text-white"></i>
         </button>
-        <button class="btn btn-sm border-0 bg-dark-subtle">
+        <a href="{% url 'tasks:task_delete' task.project.id task.id %}" class="btn btn-sm border-0 bg-dark-subtle">
             <i class="bi bi-trash text-danger"></i>
-        </button>
+        </a>
     </div>
 </div>

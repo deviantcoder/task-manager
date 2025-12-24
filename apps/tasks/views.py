@@ -4,7 +4,7 @@ from django.db.models import Count, Q
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_http_methods
 
-from .models import Project
+from .models import Project, Task
 from .forms import ProjectForm, TaskForm
 
 
@@ -135,3 +135,23 @@ def task_create(request, project_id):
         task.save()
     
     return redirect('tasks:project_detail', project_id)
+
+
+@login_required
+def task_delete(request, task_id, project_id=None):
+    task = get_object_or_404(Task, id=task_id)
+    project = get_object_or_404(Project, id=project_id)
+
+    if task.project.author != request.user:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        task.delete()
+        return redirect('tasks:project_detail', task.project.id)
+
+    context = {
+        'task': task,
+        'project': project,
+    }
+
+    return render(request, 'tasks/task_delete.html', context)
