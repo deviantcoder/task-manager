@@ -179,3 +179,19 @@ def task_update(request, project_id, task_id):
     }
 
     return render(request, 'tasks/task_update.html', context)
+
+
+@require_http_methods(['POST'])
+@login_required
+def task_toggle_complete(request, project_id, task_id): 
+    task = get_object_or_404(
+        Task,
+        id=task_id,
+        project_id=project_id,
+        project__author=request.user
+    )
+
+    task.is_completed = not task.is_completed
+    task.save(update_fields=['is_completed'])
+
+    return redirect('tasks:project_detail', project_id)

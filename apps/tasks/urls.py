@@ -14,4 +14,5 @@ urlpatterns = [
     path('projects/<uuid:project_id>/tasks/create/', views.task_create, name='task_create'),
     path('projects/<uuid:project_id>/tasks/<uuid:task_id>/update/', views.task_update, name='task_update'),
     path('projects/<uuid:project_id>/tasks/<uuid:task_id>/delete/', views.task_delete, name='task_delete'),
+    path('projects/<uuid:project_id>/tasks/<uuid:task_id>/complete/', views.task_toggle_complete, name='task_toggle_complete'),
 ]
