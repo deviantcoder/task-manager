@@ -13,9 +13,9 @@
     </div>
     <div class="d-flex align-items-center gap-2">
         <span class="badge {{ task.priority }}-priority-bg">{{ task.get_priority_display }}</span>
-        <button class="btn btn-sm border-0 bg-dark-subtle">
+        <a href="{% url 'tasks:task_update' task.project.id task.id %}" class="btn btn-sm border-0 bg-dark-subtle">
             <i class="bi bi-pencil text-white"></i>
-        </button>
+        </a>
         <a href="{% url 'tasks:task_delete' task.project.id task.id %}" class="btn btn-sm border-0 bg-dark-subtle">
             <i class="bi bi-trash text-danger"></i>
         </a>

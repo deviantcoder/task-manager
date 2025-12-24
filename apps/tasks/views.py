@@ -138,16 +138,16 @@ def task_create(request, project_id):
 
 
 @login_required
-def task_delete(request, task_id, project_id=None):
-    task = get_object_or_404(Task, id=task_id)
+def task_delete(request, project_id, task_id):
     project = get_object_or_404(Project, id=project_id)
+    task = get_object_or_404(Task, id=task_id)
 
-    if task.project.author != request.user:
+    if project.author != request.user:
         raise PermissionDenied
 
     if request.method == 'POST':
         task.delete()
-        return redirect('tasks:project_detail', task.project.id)
+        return redirect('tasks:project_detail', project_id)
 
     context = {
         'task': task,
@@ -155,3 +155,27 @@ def task_delete(request, task_id, project_id=None):
     }
 
     return render(request, 'tasks/task_delete.html', context)
+
+
+@login_required
+def task_update(request, project_id, task_id):
+    project = get_object_or_404(Project, id=project_id)
+    task = get_object_or_404(Task, id=task_id)
+
+    if project.author != request.user:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('tasks:project_detail', project_id)
+    else:
+        form = TaskForm(instance=task)
+
+    context = {
+        'form': form,
+        'task': task,
+    }
+
+    return render(request, 'tasks/task_update.html', context)
