@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+from django.core.exceptions import PermissionDenied
 
 from .models import Project
 from .forms import ProjectForm
@@ -85,3 +86,21 @@ def project_update(request, project_id):
     }
 
     return render(request, 'tasks/project_update.html', context)
+
+
+@login_required
+def project_delete(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if project.author != request.user:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        project.delete()
+        return redirect('tasks:project_list')
+
+    context = {
+        'project': project
+    }
+
+    return render(request, 'tasks/project_delete.html', context)
