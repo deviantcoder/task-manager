@@ -66,3 +66,22 @@ def project_create(request):
     }
 
     return render(request, 'tasks/project_create.html', context)
+
+
+@login_required
+def project_update(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('tasks:project_detail', project_id)
+    else:
+        form = ProjectForm(instance=project)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'tasks/project_update.html', context)
