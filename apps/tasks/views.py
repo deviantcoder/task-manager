@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_http_methods
 
 from .models import Project
-from .forms import ProjectForm
+from .forms import ProjectForm, TaskForm
+
+
+# Project views
 
 
 @login_required
@@ -37,6 +41,9 @@ def project_detail(request, project_id):
         id=project_id
     )
 
+    if project.author != request.user:
+        raise PermissionDenied
+
     active_tasks = project.tasks.filter(is_completed=False)
     completed_tasks = project.tasks.filter(is_completed=True)
 
@@ -56,7 +63,7 @@ def project_create(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.author = request.user
-            project.save(update_fields=['author'])
+            project.save()
 
             return redirect('tasks:project_list')
     else:
@@ -72,6 +79,9 @@ def project_create(request):
 @login_required
 def project_update(request, project_id):
     project = get_object_or_404(Project, id=project_id)
+
+    if project.author != request.user:
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
@@ -104,3 +114,24 @@ def project_delete(request, project_id):
     }
 
     return render(request, 'tasks/project_delete.html', context)
+
+
+# Task views
+
+
+@require_http_methods(['POST'])
+@login_required
+def task_create(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if project.author != request.user:
+        raise PermissionDenied
+    
+    form = TaskForm(request.POST)
+
+    if form.is_valid():
+        task = form.save(commit=False)
+        task.project = project
+        task.save()
+    
+    return redirect('tasks:project_detail', project_id)

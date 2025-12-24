@@ -1,5 +1,7 @@
 {% extends '_base.html' %}
 
+{% load static %}
+
 {% block head_title %}
     Project detail
 {% endblock head_title %}
@@ -24,19 +26,30 @@
 				</a>
 			</div>
 		</div>
-		<div class="input-group mb-3">
-			<input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Start typing here to create a task...">
-			<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Priority</button>
-			<ul class="dropdown-menu dropdown-menu-end p-1">
-				<li><a class="dropdown-item bg-success rounded-3 mb-1 fw-semibold" href="#">Low</a></li>
-				<li><a class="dropdown-item bg-warning rounded-3 mb-1 fw-semibold" href="#">Medium</a></li>
-				<li><a class="dropdown-item bg-danger rounded-3 fw-semibold" href="#">High</a></li>
-			</ul>
-			<button type="button" class="btn btn-info">
-				<i class="bi bi-plus-lg"></i>
-				Add
-			</button>
-		</div>
+		<form method="POST" action="{% url 'tasks:task_create' project.id %}">
+			{% csrf_token %}
+			<div class="input-group mb-3">
+				<input type="text" name="title" class="form-control" placeholder="Start typing here to create a task..." required>
+				<input type="hidden" name="priority" id="priority-input" value="low">
+				<button id="priority-button" class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+					Priority
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end p-1">
+					<li>
+						<a class="dropdown-item bg-success rounded-3 mb-1 fw-semibold" href="#" data-value="low">Low</a>
+					</li>
+					<li>
+						<a class="dropdown-item bg-warning rounded-3 mb-1 fw-semibold" href="#" data-value="medium">Medium</a>
+					</li>
+					<li>
+						<a class="dropdown-item bg-danger rounded-3 fw-semibold" href="#" data-value="high">High</a>
+					</li>
+				</ul>
+				<button type="submit" class="btn btn-info">
+					<i class="bi bi-plus-lg"></i> Add
+				</button>
+			</div>
+		</form>
 		<div class="d-flex align-items-center mb-2">
 			<i class="bi bi-hourglass-split fs-5 me-1"></i>
 			<span class="fw-semibold fs-5">Active tasks</span>
@@ -71,3 +84,6 @@
 		</div>
 	</main>
 {% endblock content %}
+{% block extra_js %}
+	<script src="{% static 'js/task_priority.js' %}"></script>
+{% endblock extra_js %}
