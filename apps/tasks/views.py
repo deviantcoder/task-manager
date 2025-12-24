@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 
 from .models import Project
+from .forms import ProjectForm
 
 
 @login_required
@@ -18,6 +19,7 @@ def project_list(request):
                 'tasks', filter=Q(tasks__is_completed=True)
             )
         )
+        .order_by('-created')
     )
 
     context = {
@@ -44,3 +46,23 @@ def project_detail(request, project_id):
     }
 
     return render(request, 'tasks/project_detail.html', context)
+
+
+@login_required
+def project_create(request):
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.author = request.user
+            project.save(update_fields=['author'])
+
+            return redirect('tasks:project_list')
+    else:
+        form = ProjectForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'tasks/project_create.html', context)
