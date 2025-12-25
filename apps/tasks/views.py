@@ -31,7 +31,7 @@ def project_list(request):
         'projects': projects,
     }
 
-    return render(request, 'tasks/project_list.html', context)
+    return render(request, 'tasks/projects/list.html', context)
 
 
 @login_required
@@ -53,7 +53,7 @@ def project_detail(request, project_id):
         'completed_tasks': completed_tasks,
     }
 
-    return render(request, 'tasks/project_detail.html', context)
+    return render(request, 'tasks/projects/detail.html', context)
 
 
 @login_required
@@ -73,7 +73,7 @@ def project_create(request):
         'form': form,
     }
 
-    return render(request, 'tasks/project_create.html', context)
+    return render(request, 'tasks/projects/create.html', context)
 
 
 @login_required
@@ -95,7 +95,7 @@ def project_update(request, project_id):
         'form': form,
     }
 
-    return render(request, 'tasks/project_update.html', context)
+    return render(request, 'tasks/projects/update.html', context)
 
 
 @login_required
@@ -113,7 +113,7 @@ def project_delete(request, project_id):
         'project': project
     }
 
-    return render(request, 'tasks/project_delete.html', context)
+    return render(request, 'tasks/projects/delete.html', context)
 
 
 # Task views
@@ -154,7 +154,7 @@ def task_delete(request, project_id, task_id):
         'project': project,
     }
 
-    return render(request, 'tasks/task_delete.html', context)
+    return render(request, 'tasks/tasks/delete.html', context)
 
 
 @login_required
@@ -178,7 +178,7 @@ def task_update(request, project_id, task_id):
         'task': task,
     }
 
-    return render(request, 'tasks/task_update.html', context)
+    return render(request, 'tasks/tasks/update.html', context)
 
 
 @require_http_methods(['POST'])

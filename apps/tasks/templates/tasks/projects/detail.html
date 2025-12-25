@@ -57,7 +57,7 @@
 		<div class="card shadow-sm rounded-3 mb-5 border-info">
 			<div class="card-body p-0">
                 {% for task in active_tasks  %}
-                    {% include 'tasks/partials/task.html' %}
+                    {% include 'tasks/tasks/partials/task.html' %}
                 {% empty %}
                     <div class="text-center py-3 text-secondary">
                         <i class="bi bi-inbox fs-1 d-block mb-1"></i>
@@ -73,7 +73,7 @@
 		<div class="card shadow-sm rounded-3 mb-3">
 			<div class="card-body p-0">
                 {% for task in completed_tasks %}
-                    {% include 'tasks/partials/task.html' %}
+                    {% include 'tasks/tasks/partials/task.html' %}
                 {% empty %}
                     <div class="text-center py-3 text-secondary">
                         <i class="bi bi-inbox fs-1 d-block mb-1"></i>
