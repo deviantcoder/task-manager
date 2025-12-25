@@ -65,9 +65,6 @@ def project_detail(request, project_id):
         id=project_id
     )
 
-    if project.author != request.user:
-        raise PermissionDenied
-
     context = {
         'project': project,
     }
@@ -117,10 +114,10 @@ def project_create(request):
 
 @login_required
 def project_update(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-
-    if project.author != request.user:
-        raise PermissionDenied
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
@@ -139,7 +136,10 @@ def project_update(request, project_id):
 
 @login_required
 def project_delete(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
 
     if project.author != request.user:
         raise PermissionDenied
@@ -177,10 +177,10 @@ def task_count(request, project_id):
 @require_http_methods(['POST'])
 @login_required
 def task_create(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-
-    if project.author != request.user:
-        raise PermissionDenied
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
     
     form = TaskForm(request.POST)
 
@@ -218,11 +218,13 @@ def task_create(request, project_id):
 
 @login_required
 def task_delete(request, project_id, task_id):
-    project = get_object_or_404(Project, id=project_id)
-    task = get_object_or_404(Task, id=task_id)
-
-    if project.author != request.user:
-        raise PermissionDenied
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
+    task = get_object_or_404(
+        Task, id=task_id, project_id=project_id
+    )
 
     if request.method == 'POST':
         task.delete()
@@ -238,11 +240,13 @@ def task_delete(request, project_id, task_id):
 
 @login_required
 def task_update(request, project_id, task_id):
-    project = get_object_or_404(Project, id=project_id)
-    task = get_object_or_404(Task, id=task_id)
-
-    if project.author != request.user:
-        raise PermissionDenied
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
+    task = get_object_or_404(
+        Task, id=task_id, project_id=project_id
+    )
 
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
@@ -263,12 +267,12 @@ def task_update(request, project_id, task_id):
 @require_http_methods(['POST'])
 @login_required
 def task_toggle_complete(request, project_id, task_id):
-    project = get_object_or_404(Project, id=project_id, author=request.user)
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
     task = get_object_or_404(
-        Task,
-        id=task_id,
-        project_id=project_id,
-        project__author=request.user
+        Task, id=task_id, project_id=project_id
     )
 
     task.is_completed = not task.is_completed
@@ -299,10 +303,10 @@ def task_toggle_complete(request, project_id, task_id):
 
 @login_required
 def task_list_partial(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-
-    if project.author != request.user:
-        raise PermissionDenied
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
 
     active_tasks = project.tasks.filter(is_completed=False)
     completed_tasks = project.tasks.filter(is_completed=True)
