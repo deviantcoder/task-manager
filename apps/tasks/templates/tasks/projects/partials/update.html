@@ -1,0 +1,37 @@
+{% load widget_tweaks %}
+<div class="container mt-2">
+    <div class="row justify-content-center">
+        <div class="card rounded-3 p-3 border-0">
+            <div class="card-body text-center">
+                <h3 class="card-title mb-4 fw-bold text-white">Update project</h3>
+                <form method="POST"
+                    hx-post="{% url 'tasks:project_update' project.id %}"
+                    hx-target="#project-header"
+                    hx-trigger="submit"
+                    hx-swap="innerHTML"
+                >
+                    {% csrf_token %}
+                    <div class="mb-3 text-start">
+                        <i class="bi bi-person-fill me-2"></i> 
+                        {{ form.title|add_label_class:'form-label fw-semibold' }}
+                        {% render_field form.title class="form-control p-3 rounded-3" placeholder="Choose a name for your new project" autocomplete="off" %}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.title.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-outline-light w-100 mt-2 rounded-3 p-2 fw-bold">Confirm</button>
+                </form>
+            </div> 
+        </div>
+    </div>
+</div>

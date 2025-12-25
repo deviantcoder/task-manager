@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
-from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_http_methods
-from django.template.loader import render_to_string
-from django.http.response import HttpResponse
 
-from .models import Project, Task
+from .models import Task
 from .forms import ProjectForm, TaskForm
 
 
@@ -65,6 +62,17 @@ def project_detail(request, project_id):
         id=project_id
     )
 
+    if request.htmx:
+        context = {
+            'project': project
+        }
+
+        response = render(
+            request, 'tasks/projects/partials/header.html', context
+        )
+
+        return response
+
     context = {
         'project': project,
     }
@@ -88,13 +96,11 @@ def project_create(request):
                     'projects': projects,
                 }
 
-                html = render_to_string(
+                response = render(
+                    render,
                     'tasks/projects/partials/list_partial.html',
                     context,
-                    request=request
                 )
-
-                response = HttpResponse(html)
                 response['HX-Trigger'] = '{"close": true, "project-changed": true}'
 
                 return response
@@ -123,15 +129,29 @@ def project_update(request, project_id):
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
+
+            if request.htmx:
+                context = {
+                    'project': project
+                }
+
+                response = render(
+                    request, 'tasks/projects/partials/header.html', context
+                )
+                response['HX-Trigger'] = '{"close": true, "project-changed": true}'
+
+                return response
+        else:
             return redirect('tasks:project_detail', project_id)
     else:
         form = ProjectForm(instance=project)
 
     context = {
         'form': form,
+        'project': project,
     }
 
-    return render(request, 'tasks/projects/update.html', context)
+    return render(request, 'tasks/projects/partials/update.html', context)
 
 
 @login_required
@@ -140,9 +160,6 @@ def project_delete(request, project_id):
         get_project_queryset(request),
         id=project_id
     )
-
-    if project.author != request.user:
-        raise PermissionDenied
 
     if request.method == 'POST':
         project.delete()
@@ -156,22 +173,6 @@ def project_delete(request, project_id):
 
 
 # Task views
-
-
-@login_required
-def task_count(request, project_id):
-    project = get_object_or_404(
-        get_project_queryset(request),
-        id=project_id
-    )
-
-    context = {
-        'project': project,
-    }
-
-    return render(
-        request, 'tasks/tasks/partials/task_count.html', context
-    )
 
 
 @require_http_methods(['POST'])
@@ -198,20 +199,12 @@ def task_create(request, project_id):
                 'completed_tasks': completed_tasks,
             }
 
-            html = render_to_string(
-                'tasks/tasks/partials/list_partial.html',
-                context,
-                request=request
+            response = render(
+                request, 'tasks/tasks/partials/list_partial.html', context
             )
-
-            response = HttpResponse(html)
             response['HX-Trigger'] = '{"task-changed": true}'
 
             return response
-
-        return render(
-            request, 'tasks/projects/partials/create_form.html', {'form': form}
-        )
     
     return redirect('tasks:project_detail', project_id)
 
@@ -287,13 +280,9 @@ def task_toggle_complete(request, project_id, task_id):
             'completed_tasks': completed_tasks,
         }
 
-        html = render_to_string(
-            'tasks/tasks/partials/list_partial.html',
-            context,
-            request=request
+        response = render(
+            request, 'tasks/tasks/partials/list_partial.html', context
         )
-
-        response = HttpResponse(html)
         response['HX-Trigger'] = '{"task-changed": true}'
 
         return response
