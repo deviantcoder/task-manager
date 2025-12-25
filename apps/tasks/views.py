@@ -88,8 +88,10 @@ def project_create(request):
                 response['HX-Trigger'] = '{"close": true}'
 
                 return response
-
-            return redirect('tasks:project_list')
+        else:
+            return render(
+                request, 'tasks/projects/partials/create_form.html', {'form': form}
+            )
     
     form = ProjectForm()
 
@@ -157,6 +159,29 @@ def task_create(request, project_id):
         task = form.save(commit=False)
         task.project = project
         task.save()
+
+        if request.htmx:
+            active_tasks = project.tasks.filter(is_completed=False)
+            completed_tasks = project.tasks.filter(is_completed=True)
+
+            context = {
+                'active_tasks': active_tasks,
+                'completed_tasks': completed_tasks,
+            }
+
+            html = render_to_string(
+                'tasks/tasks/partials/list_partial.html',
+                context,
+                request=request
+            )
+
+            response = HttpResponse(html)
+
+            return response
+
+        return render(
+            request, 'tasks/projects/partials/create_form.html', {'form': form}
+        )
     
     return redirect('tasks:project_detail', project_id)
 

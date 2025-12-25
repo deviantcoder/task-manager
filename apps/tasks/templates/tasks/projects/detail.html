@@ -26,12 +26,19 @@
 				</a>
 			</div>
 		</div>
-		<form method="POST" action="{% url 'tasks:task_create' project.id %}">
+		<form method="POST"
+			hx-post="{% url 'tasks:task_create' project.id %}"
+			hx-trigger="submit"
+			hx-target="#task_list"
+			hx-swap="innerHTML"
+			hx-indicator="#task-list-spinner"
+			_="on htmx:afterRequest reset() me"
+		>
 			{% csrf_token %}
 			<div class="input-group mb-3">
 				<input type="text" name="title" class="form-control" placeholder="Start typing here to create a task..." required>
 				<input type="hidden" name="priority" id="priority-input" value="low">
-				<button id="priority-button" class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+				<button id="priority-button" class="btn btn-outline-secondary dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
 					Priority
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end p-1">
@@ -39,7 +46,7 @@
 					<li><a class="dropdown-item bg-warning rounded-3 mb-1 fw-semibold" href="#" data-value="medium">Medium</a></li>
 					<li><a class="dropdown-item bg-danger rounded-3 fw-semibold" href="#" data-value="high">High</a></li>
 				</ul>
-				<button type="submit" class="btn btn-info">
+				<button type="submit" class="btn btn-info fw-semibold">
 					<i class="bi bi-plus-lg"></i> Add
 				</button>
 			</div>
@@ -49,10 +56,10 @@
 			hx-target="#task_list"
 			hx-trigger="load"
 			hx-swap="innerHTML"
-			hx-indicator="#spinner"
+			hx-indicator="#task-list-spinner"
 		>
 		</div>
-		{% include 'includes/spinner.html' %}
+		{% include 'includes/spinner.html' with name='task-list' %}
 	</main>
 {% endblock content %}
 {% block extra_js %}

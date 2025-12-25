@@ -29,9 +29,9 @@
             hx-trigger="load"
             hx-target="#project_list"
             hx-swap="innerHTML"
-            hx-indicator="#spinner"
+            hx-indicator="#project-list-spinner"
         >
         </div>
-        {% include 'includes/spinner.html' %}
+        {% include 'includes/spinner.html' with name='project-list' %}
     </main>
 {% endblock content %}
