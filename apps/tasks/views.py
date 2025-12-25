@@ -259,7 +259,7 @@ def task_update(request, project_id, task_id):
         'task': task,
     }
 
-    return render(request, 'tasks/tasks/update.html', context)
+    return render(request, 'tasks/tasks/partials/update.html', context)
 
 
 @require_http_methods(['POST'])

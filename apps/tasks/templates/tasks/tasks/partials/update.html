@@ -27,6 +27,15 @@
                             </div>
                         {% endif %}
                     </div>
+                    <div class="mb-3 text-start">
+                        <i class="bi bi-person-fill me-2"></i> {{ form.due_date|add_label_class:'form-label fw-semibold' }}
+                        {% render_field form.due_date class="form-control p-3 rounded-3" placeholder="Choose a name for your new task" type="date" %}
+                        {% if form.due_date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.due_date.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
                     <button type="submit" class="btn btn-outline-light w-100 mt-2 rounded-3 p-2 fw-bold">Confirm</button>
                 </form>
             </div> 
