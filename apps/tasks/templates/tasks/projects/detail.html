@@ -22,10 +22,16 @@
 					<i class="bi bi-pencil"></i>
 					Edit
 				</a>
-				<a href="{% url 'tasks:project_delete' project.id %}" class="btn btn-sm rounded-3 btn-outline-danger fw-semibold">
+				<button type="button" class="btn btn-sm rounded-3 btn-outline-danger fw-semibold"
+					hx-get="{% url 'tasks:project_delete' project.id %}"
+					hx-target="#modal-body"
+					hx-swap="innerHTML"
+					data-bs-toggle="modal"
+                	data-bs-target="#modal"
+				>
 					<i class="bi bi-trash"></i>
 					Delete
-				</a>
+				</button>
 			</div>
 		</div>
 		<form method="POST"

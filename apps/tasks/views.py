@@ -152,7 +152,7 @@ def project_delete(request, project_id):
         'project': project
     }
 
-    return render(request, 'tasks/projects/delete.html', context)
+    return render(request, 'tasks/projects/partials/delete.html', context)
 
 
 # Task views

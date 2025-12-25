@@ -1,7 +1,7 @@
 {% for project in projects %}
     <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
         <div class="card h-100 shadow-sm rounded-3">
-            <div class="card-body">
+            <div class="card-body p-4 py-5">
                 <h5 class="card-title">{{ project.title }}</h5>
                 <p class="card-text text-secondary small">
                     {{ project.active_tasks_count }} task{{ project.active_tasks_count|pluralize:'s' }}
