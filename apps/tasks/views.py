@@ -48,10 +48,13 @@ def project_list(request):
 @login_required
 def project_count(request):
     project_count = request.user.projects.count()
+    context = {
+        'project_count': project_count,
+    }
     return render(
         request,
         'tasks/projects/partials/project_count.html',
-        {'project_count': project_count}
+        context
     )
 
 
@@ -155,6 +158,22 @@ def project_delete(request, project_id):
 # Task views
 
 
+@login_required
+def task_count(request, project_id):
+    project = get_object_or_404(
+        get_project_queryset(request),
+        id=project_id
+    )
+
+    context = {
+        'project': project,
+    }
+
+    return render(
+        request, 'tasks/tasks/partials/task_count.html', context
+    )
+
+
 @require_http_methods(['POST'])
 @login_required
 def task_create(request, project_id):
@@ -186,6 +205,7 @@ def task_create(request, project_id):
             )
 
             response = HttpResponse(html)
+            response['HX-Trigger'] = '{"task-changed": true}'
 
             return response
 
@@ -269,7 +289,10 @@ def task_toggle_complete(request, project_id, task_id):
             request=request
         )
 
-        return HttpResponse(html)
+        response = HttpResponse(html)
+        response['HX-Trigger'] = '{"task-changed": true}'
+
+        return response
 
     return redirect('tasks:project_detail', project_id)
 
