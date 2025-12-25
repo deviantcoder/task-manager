@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.views.decorators.http import require_http_methods
+from django.http.response import HttpResponse
 
 from .models import Task
 from .forms import ProjectForm, TaskForm
@@ -191,17 +192,7 @@ def task_create(request, project_id):
         task.save()
 
         if request.htmx:
-            active_tasks = project.tasks.filter(is_completed=False)
-            completed_tasks = project.tasks.filter(is_completed=True)
-
-            context = {
-                'active_tasks': active_tasks,
-                'completed_tasks': completed_tasks,
-            }
-
-            response = render(
-                request, 'tasks/tasks/partials/list_partial.html', context
-            )
+            response = HttpResponse()
             response['HX-Trigger'] = '{"task-changed": true}'
 
             return response
@@ -221,6 +212,13 @@ def task_delete(request, project_id, task_id):
 
     if request.method == 'POST':
         task.delete()
+
+        if request.htmx:
+            response = HttpResponse()
+            response['HX-Trigger'] = '{"close": true, "task-changed": true}'
+
+            return response
+
         return redirect('tasks:project_detail', project_id)
 
     context = {
@@ -272,17 +270,7 @@ def task_toggle_complete(request, project_id, task_id):
     task.save(update_fields=['is_completed'])
 
     if request.htmx:
-        active_tasks = project.tasks.filter(is_completed=False)
-        completed_tasks = project.tasks.filter(is_completed=True)
-
-        context = {
-            'active_tasks': active_tasks,
-            'completed_tasks': completed_tasks,
-        }
-
-        response = render(
-            request, 'tasks/tasks/partials/list_partial.html', context
-        )
+        response = HttpResponse()
         response['HX-Trigger'] = '{"task-changed": true}'
 
         return response

@@ -65,12 +65,10 @@
 		<div id="task_list"
 			hx-get="{% url 'tasks:task_list_partial' project.id %}"
 			hx-target="#task_list"
-			hx-trigger="load"
+			hx-trigger="load, task-changed from:body"
 			hx-swap="innerHTML"
-			hx-indicator="#task-list-spinner"
 		>
 		</div>
-		{% include 'includes/spinner.html' with name='task-list' %}
 	</main>
 {% endblock content %}
 {% block extra_js %}
