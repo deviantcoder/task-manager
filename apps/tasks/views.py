@@ -30,6 +30,11 @@ def project_list(request):
     context = {
         'projects': projects,
     }
+    
+    if request.htmx:
+        return render(
+            request, 'tasks/projects/partials/list_partial.html', context
+        )
 
     return render(request, 'tasks/projects/list.html', context)
 
