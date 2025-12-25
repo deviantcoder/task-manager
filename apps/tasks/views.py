@@ -46,6 +46,16 @@ def project_list(request):
 
 
 @login_required
+def project_count(request):
+    project_count = request.user.projects.count()
+    return render(
+        request,
+        'tasks/projects/partials/project_count.html',
+        {'project_count': project_count}
+    )
+
+
+@login_required
 def project_detail(request, project_id):
     project = get_object_or_404(
         get_project_queryset(request),
@@ -85,7 +95,7 @@ def project_create(request):
                 )
 
                 response = HttpResponse(html)
-                response['HX-Trigger'] = '{"close": true}'
+                response['HX-Trigger'] = '{"close": true, "project-changed": true}'
 
                 return response
         else:
