@@ -13,9 +13,8 @@ from .forms import ProjectForm, TaskForm
 # Project views
 
 
-@login_required
-def project_list(request):
-    projects = (
+def get_project_queryset(request):
+    return (
         request.user.projects.all()
         .prefetch_related('tasks')
         .annotate(
@@ -28,6 +27,11 @@ def project_list(request):
         )
         .order_by('-created')
     )
+
+
+@login_required
+def project_list(request):
+    projects = get_project_queryset(request)
 
     context = {
         'projects': projects,
@@ -44,19 +48,7 @@ def project_list(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(
-        (
-            Project.objects.prefetch_related(
-                'tasks'
-            )
-            .annotate(
-                active_tasks_count = Count(
-                    'tasks', filter=Q(tasks__is_completed=False)
-                ),
-                completed_tasks_count = Count(
-                    'tasks', filter=Q(tasks__is_completed=True)
-                )
-            )
-        ),
+        get_project_queryset(request),
         id=project_id
     )
 
@@ -79,15 +71,33 @@ def project_create(request):
             project.author = request.user
             project.save()
 
+            if request.htmx:
+                projects = get_project_queryset(request)
+
+                context = {
+                    'projects': projects,
+                }
+
+                html = render_to_string(
+                    'tasks/projects/partials/list_partial.html',
+                    context,
+                    request=request
+                )
+
+                response = HttpResponse(html)
+                response['HX-Trigger'] = '{"close": true}'
+
+                return response
+
             return redirect('tasks:project_list')
-    else:
-        form = ProjectForm()
+    
+    form = ProjectForm()
 
     context = {
         'form': form,
     }
 
-    return render(request, 'tasks/projects/create.html', context)
+    return render(request, 'tasks/projects/partials/create_form.html', context)
 
 
 @login_required

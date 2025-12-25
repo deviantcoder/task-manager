@@ -13,10 +13,16 @@
                     {{ projects|length }} project{{ projects|length|pluralize:'s' }} total
                 </p>
             </div>
-            <a href="{% url 'tasks:project_create' %}" class="btn btn-info rounded-3">
+            <button type="button" class="btn btn-info rounded-3"
+                hx-get="{% url 'tasks:project_create' %}"
+                hx-target="#modal-body"
+                hx-swap="innerHTML"
+                data-bs-toggle="modal"
+                data-bs-target="#modal"
+            >
                 <i class="bi bi-plus-lg me-1"></i>
                 New Project
-            </a>
+            </button>
         </div>
         <div id="project_list" class="row g-4"
             hx-get="{% url 'tasks:project_list' %}"

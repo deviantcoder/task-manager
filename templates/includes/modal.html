@@ -2,9 +2,15 @@
     <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
         <div class="modal-content border shadow-lg bg-blurred rounded-4 border-secondary" id="modal-content">
             <div class="modal-header border-0">
+                <h5 class="modal-title">
+                    {% block modal_title_content %}
+                    {% endblock modal_title_content %}
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-body">
+                {% block modal_body_content %}
+                {% endblock modal_body_content %}
             </div>
         </div>
     </div>
