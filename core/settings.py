@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'widget_tweaks',
     'debug_toolbar',
+    'django_htmx',
 
     # project apps
     'apps.accounts.apps.AccountsConfig',
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     # third party
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
