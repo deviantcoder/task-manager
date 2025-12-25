@@ -21,9 +21,15 @@
     </div>
     <div class="d-flex align-items-center gap-2">
         <span class="badge {{ task.priority }}-priority-bg">{{ task.get_priority_display }}</span>
-        <a href="{% url 'tasks:task_update' task.project.id task.id %}" class="btn btn-sm border-0 bg-dark-subtle">
+        <button type="button" class="btn btn-sm border-0 bg-dark-subtle"
+            hx-get="{% url 'tasks:task_update' task.project.id task.id %}"
+            hx-target="#modal-body"
+            hx-swap="innerHTML"
+            data-bs-toggle="modal"
+            data-bs-target="#modal"
+        >
             <i class="bi bi-pencil text-white"></i>
-        </a>
+        </button>
         <button type="button" class="btn btn-sm border-0 bg-dark-subtle"
             hx-get="{% url 'tasks:task_delete' task.project.id task.id %}"
             hx-target="#modal-body"

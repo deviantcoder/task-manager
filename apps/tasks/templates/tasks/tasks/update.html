@@ -1,43 +1,35 @@
-{% extends '_base.html' %}
-
 {% load widget_tweaks %}
-
-{% block head_title %}
-    Update task
-{% endblock head_title %}
-
-{% block content %}
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-5 col-lg-5">
-                <div class="card rounded-3 p-3 py-5 border-0 bg-dark-subtle">
-                    <div class="card-body text-center">
-                        <h3 class="card-title mb-4 fw-bold text-white">Update task</h3>
-                        <form method="POST" action="{% url 'tasks:task_update' task.project.id task.id %}">
-                            {% csrf_token %}
-                            <div class="mb-3 text-start">
-                                <i class="bi bi-person-fill me-2"></i> {{ form.title|add_label_class:'form-label fw-semibold' }}
-                                {% render_field form.title class="form-control p-3 rounded-3" placeholder="Choose a name for your new task" %}
-                                {% if form.title.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.title.errors }}
-                                    </div>
-                                {% endif %}
+<div class="container mt-2">
+    <div class="row justify-content-center">
+        <div class="card rounded-3 p-3 border-0">
+            <div class="card-body text-center">
+                <h3 class="card-title mb-4 fw-bold text-white">Update task</h3>
+                <form method="POST"
+                    hx-post="{% url 'tasks:task_update' task.project.id task.id %}"
+                    hx-trigger="submit"
+                >
+                    {% csrf_token %}
+                    <div class="mb-3 text-start">
+                        <i class="bi bi-person-fill me-2"></i> {{ form.title|add_label_class:'form-label fw-semibold' }}
+                        {% render_field form.title class="form-control p-3 rounded-3" placeholder="Choose a name for your new task" %}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.title.errors }}
                             </div>
-                            <div class="mb-3 text-start">
-                                <i class="bi bi-person-fill me-2"></i> {{ form.priority|add_label_class:'form-label fw-semibold' }}
-                                {% render_field form.priority class="form-select p-3 rounded-3" placeholder="Choose a name for your new task" %}
-                                {% if form.priority.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.priority.errors }}
-                                    </div>
-                                {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 text-start">
+                        <i class="bi bi-person-fill me-2"></i> {{ form.priority|add_label_class:'form-label fw-semibold' }}
+                        {% render_field form.priority class="form-select p-3 rounded-3" placeholder="Choose a name for your new task" %}
+                        {% if form.priority.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.priority.errors }}
                             </div>
-                            <button type="submit" class="btn btn-outline-light w-100 mt-2 rounded-3 p-2 fw-bold">Confirm</button>
-                        </form>
-                    </div> 
-                </div>
-            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-outline-light w-100 mt-2 rounded-3 p-2 fw-bold">Confirm</button>
+                </form>
+            </div> 
         </div>
     </div>
-{% endblock content %}
+</div>

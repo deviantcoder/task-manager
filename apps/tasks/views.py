@@ -226,7 +226,7 @@ def task_delete(request, project_id, task_id):
         'project': project,
     }
 
-    return render(request, 'tasks/tasks/delete.html', context)
+    return render(request, 'tasks/tasks/partials/delete.html', context)
 
 
 @login_required
@@ -243,6 +243,13 @@ def task_update(request, project_id, task_id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+
+            if request.htmx:
+                response = HttpResponse()
+                response['HX-Trigger'] = '{"close": true, "task-changed": true}'
+
+                return response
+
             return redirect('tasks:project_detail', project_id)
     else:
         form = TaskForm(instance=task)
