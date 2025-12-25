@@ -1,8 +1,13 @@
 <div class="d-flex align-items-center justify-content-between px-3 py-2 {% if task.is_completed %}opacity-75{% endif %}">
     <div class="d-flex align-items-center gap-3">
-        <form method="POST" action="{% url 'tasks:task_toggle_complete' task.project.id task.id %}">
+        <form method="POST"
+            hx-post="{% url 'tasks:task_toggle_complete' task.project.id task.id %}",
+            hx-trigger="change"
+            hx-target="#task_list"
+            hx-swap="innerHTML"
+        >
             {% csrf_token %}
-            <input class="form-check-input" {% if task.is_completed %}checked{% endif %} type="checkbox" onchange="this.form.submit()">
+            <input class="form-check-input" {% if task.is_completed %}checked{% endif %} type="checkbox">
         </form>
         <div {% if task.is_completed %}class="text-decoration-line-through"{% endif %}>
             <div class="fw-semibold text-white">{{ task.title }}</div>

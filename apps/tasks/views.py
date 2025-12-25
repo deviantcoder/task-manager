@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_http_methods
+from django.template.loader import render_to_string
+from django.http.response import HttpResponse
 
 from .models import Project, Task
 from .forms import ProjectForm, TaskForm
@@ -195,7 +197,8 @@ def task_update(request, project_id, task_id):
 
 @require_http_methods(['POST'])
 @login_required
-def task_toggle_complete(request, project_id, task_id): 
+def task_toggle_complete(request, project_id, task_id):
+    project = get_object_or_404(Project, id=project_id, author=request.user)
     task = get_object_or_404(
         Task,
         id=task_id,
@@ -205,6 +208,23 @@ def task_toggle_complete(request, project_id, task_id):
 
     task.is_completed = not task.is_completed
     task.save(update_fields=['is_completed'])
+
+    if request.htmx:
+        active_tasks = project.tasks.filter(is_completed=False)
+        completed_tasks = project.tasks.filter(is_completed=True)
+
+        context = {
+            'active_tasks': active_tasks,
+            'completed_tasks': completed_tasks,
+        }
+
+        html = render_to_string(
+            'tasks/tasks/partials/list_partial.html',
+            context,
+            request=request
+        )
+
+        return HttpResponse(html)
 
     return redirect('tasks:project_detail', project_id)
 
