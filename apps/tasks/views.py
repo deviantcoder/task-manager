@@ -98,9 +98,7 @@ def project_create(request):
                 }
 
                 response = render(
-                    render,
-                    'tasks/projects/partials/list_partial.html',
-                    context,
+                    request, 'tasks/projects/partials/list_partial.html', context
                 )
                 response['HX-Trigger'] = '{"close": true, "project-changed": true}'
 
