@@ -12,7 +12,7 @@
 			<div>
 				<h3 class="mb-1">{{ project.title }}</h3>
 				<p class="text-secondary small mb-0">
-					{{ active_tasks|length }} task{{ active_tasks|length|pluralize:'s' }} • {{ completed_tasks|length }} completed
+					{{ project.active_tasks_count }} task{{ project.active_tasks_count|pluralize:'s' }} • {{ project.completed_tasks_count }} completed
 				</p>
 			</div>
 			<div class="d-flex gap-2">
@@ -35,53 +35,24 @@
 					Priority
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end p-1">
-					<li>
-						<a class="dropdown-item bg-success rounded-3 mb-1 fw-semibold" href="#" data-value="low">Low</a>
-					</li>
-					<li>
-						<a class="dropdown-item bg-warning rounded-3 mb-1 fw-semibold" href="#" data-value="medium">Medium</a>
-					</li>
-					<li>
-						<a class="dropdown-item bg-danger rounded-3 fw-semibold" href="#" data-value="high">High</a>
-					</li>
+					<li><a class="dropdown-item bg-success rounded-3 mb-1 fw-semibold" href="#" data-value="low">Low</a></li>
+					<li><a class="dropdown-item bg-warning rounded-3 mb-1 fw-semibold" href="#" data-value="medium">Medium</a></li>
+					<li><a class="dropdown-item bg-danger rounded-3 fw-semibold" href="#" data-value="high">High</a></li>
 				</ul>
 				<button type="submit" class="btn btn-info">
 					<i class="bi bi-plus-lg"></i> Add
 				</button>
 			</div>
 		</form>
-		<div class="d-flex align-items-center mb-2">
-			<i class="bi bi-hourglass-split fs-5 me-1"></i>
-			<span class="fw-semibold fs-5">Active tasks</span>
+		<div id="task_list"
+			hx-get="{% url 'tasks:task_list_partial' project.id %}"
+			hx-target="#task_list"
+			hx-trigger="load"
+			hx-swap="innerHTML"
+			hx-indicator="#spinner"
+		>
 		</div>
-		<div class="card shadow-sm rounded-3 mb-5 border-info">
-			<div class="card-body p-0">
-                {% for task in active_tasks  %}
-                    {% include 'tasks/tasks/partials/task.html' %}
-                {% empty %}
-                    <div class="text-center py-3 text-secondary">
-                        <i class="bi bi-inbox fs-1 d-block mb-1"></i>
-                        No active tasks yet. Create your first one.
-                    </div>
-                {% endfor %}
-			</div>
-		</div>
-		<div class="d-flex align-items-center mb-2">
-			<i class="bi bi-check-circle-fill fs-5 me-1"></i>
-			<span class="fw-semibold fs-5">Completed tasks</span>
-		</div>
-		<div class="card shadow-sm rounded-3 mb-3">
-			<div class="card-body p-0">
-                {% for task in completed_tasks %}
-                    {% include 'tasks/tasks/partials/task.html' %}
-                {% empty %}
-                    <div class="text-center py-3 text-secondary">
-                        <i class="bi bi-inbox fs-1 d-block mb-1"></i>
-                        No completed tasks yet.
-                    </div>
-                {% endfor %}
-			</div>
-		</div>
+		{% include 'includes/spinner.html' %}
 	</main>
 {% endblock content %}
 {% block extra_js %}

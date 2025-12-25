@@ -42,20 +42,27 @@ def project_list(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(
-        Project.objects.prefetch_related('tasks'),
+        (
+            Project.objects.prefetch_related(
+                'tasks'
+            )
+            .annotate(
+                active_tasks_count = Count(
+                    'tasks', filter=Q(tasks__is_completed=False)
+                ),
+                completed_tasks_count = Count(
+                    'tasks', filter=Q(tasks__is_completed=True)
+                )
+            )
+        ),
         id=project_id
     )
 
     if project.author != request.user:
         raise PermissionDenied
 
-    active_tasks = project.tasks.filter(is_completed=False)
-    completed_tasks = project.tasks.filter(is_completed=True)
-
     context = {
         'project': project,
-        'active_tasks': active_tasks,
-        'completed_tasks': completed_tasks,
     }
 
     return render(request, 'tasks/projects/detail.html', context)
@@ -200,3 +207,21 @@ def task_toggle_complete(request, project_id, task_id):
     task.save(update_fields=['is_completed'])
 
     return redirect('tasks:project_detail', project_id)
+
+
+@login_required
+def task_list_partial(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if project.author != request.user:
+        raise PermissionDenied
+
+    active_tasks = project.tasks.filter(is_completed=False)
+    completed_tasks = project.tasks.filter(is_completed=True)
+
+    context = {
+        'active_tasks': active_tasks,
+        'completed_tasks': completed_tasks,
+    }
+
+    return render(request, 'tasks/tasks/partials/list_partial.html', context)
